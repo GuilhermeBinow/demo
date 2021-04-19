@@ -1,5 +1,7 @@
 package com.example.demo.student;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,6 +18,16 @@ class StudentRepositoryTest {
 
     @Autowired
     StudentRepository underTest;
+
+    @BeforeEach
+    void setUp() {
+
+    }
+
+    @AfterEach
+    void tearDown() {
+        underTest.deleteAll();
+    }
 
     @Test
     void ItShouldCheckIfStudentExistsByEmail() {
@@ -34,7 +46,23 @@ class StudentRepositoryTest {
         assertTrue(studentByEmail.isPresent());
         assertThat(studentByEmail.get()).isEqualTo(student);
     }
+
+    @Test
+    void ItShouldCheckIfStudentDoesNotExistsByEmail() {
+        //given
+        Student student= new Student(
+                "Guilherme B",
+                "Guilherme@gmail.com",
+                LocalDate.of(1999, Month.JUNE,11)
+
+        );
+        //when
+        Optional<Student> studentByEmail = underTest.findStudentByEmail(student.getEmail());
+        //then
+
+        //assertTrue(studentByEmail.isEmpty());
+        assertThat(studentByEmail).isEmpty();
+    }
+
 }
 
-// teste de add duplicado
-//teste de delete e modify

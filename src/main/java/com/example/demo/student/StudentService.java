@@ -27,13 +27,15 @@ public class StudentService {
         Optional<Student> StudentOptional = studentRepository
                 .findStudentByEmail(student.getEmail());
         if(StudentOptional.isPresent()){
-            throw new IllegalStateException("Email Taken");
+            throw new IllegalStateException("Email"+student.getEmail()+" Taken");
         }
 
         studentRepository.save(student);
     }
 
     public void deleteStudent(Long studentId) {
+        Optional<Student> StudentOptional = studentRepository
+                .findById(studentId);
         boolean exists = studentRepository.existsById(studentId);
         if(!exists){
             throw new IllegalStateException(
