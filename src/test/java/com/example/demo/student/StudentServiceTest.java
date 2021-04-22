@@ -1,13 +1,11 @@
 package com.example.demo.student;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
@@ -99,7 +97,7 @@ class StudentServiceTest {
                     "rodrigovalori@hotmail.com",
                     LocalDate.of(1999, Month.AUGUST, 6)
             );
-            student.setId(1l);
+            student.setId(1L);
             studentRepository.save(student);
 
 
@@ -117,7 +115,95 @@ class StudentServiceTest {
     }
 
     @Test
-    @Disabled
-    void updateStudent() {
+    void InvalidStudentToDelete() {
+        // given
+        Student student = new Student(
+                "Rodrigo",
+                "rodrigovalori@hotmail.com",
+                LocalDate.of(1999, Month.AUGUST, 6)
+        );
+        student.setId(1L);
+        studentRepository.save(student);
+
+
+
+        // when
+        given(studentRepository.existsById(student.getId())).willReturn(false);
+
+        // then
+        assertThatThrownBy(()->underTest.deleteStudent(student.getId()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Student with Id" + student.getId() + " does not exists");
+
+
+
+
     }
+
+    @Test
+    void OnUpdateNoStudentExists() {
+       //given
+        Student student = new Student(
+                "Rodrigo",
+                "rodrigovalori@hotmail.com",
+                LocalDate.of(1999, Month.AUGUST, 6)
+        );
+        student.setId(1L);
+        studentRepository.save(student);
+
+        //given(studentRepository.findById(student.getId())).willReturn(null);
+
+        //when
+        //then
+        assertThatThrownBy(()->underTest.updateStudent(student.getId(),student.getName(),student.getEmail()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Student with id"+student.getId()+" does not exists");
+
+
+    }
+
+    @Test
+    void OnUpdateEmailIsTaken() {
+        //given
+        Student student = new Student(
+                "Rodrigo",
+                "rodrigovalori@hotmail.com",
+                LocalDate.of(1999, Month.AUGUST, 6)
+        );
+        student.setId(1L);
+        studentRepository.save(student);
+
+        //when
+        given(studentRepository.findById(student.getId())).willReturn(Optional.of(student));
+        given(studentRepository.findStudentByEmail(student.getEmail())).willReturn(Optional.of(student));
+
+
+        //then
+        assertThatThrownBy(()->underTest.updateStudent(student.getId(),student.getName(),student.getEmail()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("email taken");
+
+
+    }
+
+    @Test
+    void OnUpdateEmailIsNotTaken() {
+        //given
+        Student student = new Student(
+                "Rodrigo",
+                "rodrigovalori@hotmail.com",
+                LocalDate.of(1999, Month.AUGUST, 6)
+        );
+        student.setId(1L);
+        studentRepository.save(student);
+
+        //when
+        given(studentRepository.findById(student.getId())).willReturn(Optional.of(student));
+        underTest.updateStudent(student.getId(), "PEPPA PIG", "APORCANOJENTA@gmail.com");
+        //then
+        assertThat(student.getName()).isEqualTo("PEPPA PIG");
+        assertThat((student.getEmail())).isEqualTo("APORCANOJENTA@gmail.com");
+    }
+
+
 }

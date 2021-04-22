@@ -56,8 +56,7 @@ public class StudentService {
         }
 
         if (email != null &&
-            email.length() > 0 &&
-                !Objects.equals(student.getEmail(), email)){
+            email.length() > 0 ){
             Optional<Student> studentOptional = studentRepository
                     .findStudentByEmail(email);
             if(studentOptional.isPresent()){
@@ -66,7 +65,6 @@ public class StudentService {
 
             student.setEmail(email);
         }
-
 
 
     }
