@@ -1,7 +1,9 @@
-package com.example.demo.student;
+package com.example.demo.student.unit;
 
+import com.example.demo.student.repository.StudentRepository;
+import com.example.demo.student.service.StudentService;
+import com.example.demo.student.student.Student;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -12,6 +14,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Optional;
 
+import static java.util.Calendar.AUGUST;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,6 +42,29 @@ class StudentServiceTest {
         //then
         verify(studentRepository).findAll();
     }
+
+    @Test
+    void getStudentById() {
+        // given
+        Student student = new Student(
+                "Peter Parker",
+                "spiderMan@gmail.com",
+                LocalDate.of(2001, AUGUST, 10)
+        );
+
+        student.setId(1L);
+
+        studentRepository.save(student);
+
+        // when
+        given(studentRepository.findById(student.getId())).willReturn(Optional.of(student));
+
+        underTest.getStudentById(student.getId());
+
+        // then
+        assertThat(studentRepository.findById(student.getId())).isEqualTo(Optional.of(student));
+    }
+
 
     @Test
     void CanAddNewStudent() {

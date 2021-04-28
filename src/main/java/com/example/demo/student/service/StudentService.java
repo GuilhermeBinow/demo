@@ -1,5 +1,7 @@
-package com.example.demo.student;
+package com.example.demo.student.service;
 
+import com.example.demo.student.repository.StudentRepository;
+import com.example.demo.student.student.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,17 +25,28 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public void addNewStudent(Student student) {
+    public Optional<Student> getStudentById(Long studentId) {
+           Optional<Student> existsById = studentRepository.findById(studentId);
+           if(existsById.isEmpty()) {
+               throw new IllegalStateException("Student with id " + studentId + " does not exists!");
+           }
+           return studentRepository.findById(studentId);
+    }
+
+
+    public Student addNewStudent(Student student) {
         Optional<Student> StudentOptional = studentRepository
                 .findStudentByEmail(student.getEmail());
         if(StudentOptional.isPresent()){
             throw new IllegalStateException("Email"+student.getEmail()+" Taken");
         }
 
+
         studentRepository.save(student);
+        return student;
     }
 
-    public void deleteStudent(Long studentId) {
+    public Long deleteStudent(Long studentId) {
         Optional<Student> StudentOptional = studentRepository
                 .findById(studentId);
         boolean exists = studentRepository.existsById(studentId);
@@ -42,10 +55,11 @@ public class StudentService {
                     "Student with Id" + studentId + " does not exists");
         }
         studentRepository.deleteById(studentId);
+        return(studentId);
     }
 
     @Transactional
-    public void updateStudent(Long studentId, String name, String email) {
+    public List<Student> updateStudent(Long studentId, String name, String email) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalStateException("Student with id"+studentId+" does not exists"));
 
@@ -66,6 +80,6 @@ public class StudentService {
             student.setEmail(email);
         }
 
-
+        return (null);
     }
 }

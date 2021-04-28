@@ -1,5 +1,7 @@
-package com.example.demo.student;
+package com.example.demo.student.implementation;
 
+import com.example.demo.student.repository.StudentRepository;
+import com.example.demo.student.student.Student;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
