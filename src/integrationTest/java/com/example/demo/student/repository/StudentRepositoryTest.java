@@ -1,4 +1,4 @@
-package com.example.demo.student.implementation;
+package com.example.demo.student.repository;
 
 import com.example.demo.student.repository.StudentRepository;
 import com.example.demo.student.student.Student;

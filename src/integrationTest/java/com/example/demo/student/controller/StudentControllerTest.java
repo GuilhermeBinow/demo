@@ -1,5 +1,6 @@
-package com.example.demo.student.implementation;
+package com.example.demo.student.controller;
 
+import com.example.demo.student.repository.StudentRepository;
 import com.example.demo.student.service.StudentService;
 import com.example.demo.student.student.Student;
 import io.restassured.http.ContentType;
@@ -7,17 +8,21 @@ import io.restassured.response.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
 
 import javax.annotation.PostConstruct;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +30,7 @@ import java.util.Optional;
 
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
+import static java.time.Month.JUNE;
 import static java.util.Calendar.*;
 
 @ExtendWith(SpringExtension.class)

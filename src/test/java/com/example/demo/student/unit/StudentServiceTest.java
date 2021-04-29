@@ -70,9 +70,11 @@ class StudentServiceTest {
     void CanAddNewStudent() {
         //given
         Student student= new Student(
+                1L,
                 "Guilherme B",
                 "Guilherme@gmail.com",
-                LocalDate.of(1999, Month.JUNE,11)
+                LocalDate.of(1999, Month.JUNE,11),
+                21
 
         );
 
